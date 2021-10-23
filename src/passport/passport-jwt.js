@@ -10,7 +10,7 @@ passport.use(
   new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromExtractors([
-        ExtractJwt.fromHeader("token"),
+        ExtractJwt.fromHeader("authorization"),
       ]),
       secretOrKey: config.jwt.secret_key,
     },
