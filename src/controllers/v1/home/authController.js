@@ -1,4 +1,3 @@
-// const controller = require('src/controllers');
 const controller = require("src/controllers");
 const User = require("src/models/User");
 const PasswordReset = require("src/models/PasswordReset");
