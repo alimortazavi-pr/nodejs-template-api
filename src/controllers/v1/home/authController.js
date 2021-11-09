@@ -14,16 +14,16 @@ class authController extends controller {
         "local.register",
         { session: false },
         (err, user, info) => {
-          if (err) return this.failed(res, err.message);
+          if (err) return this.failed(res, req, err.message);
           if (user)
             return res.json({
               message: "Done !",
             });
-          return this.failed(res, [info.message || "server error"], 403);
+          return this.failed(res,req, [info.message || "server error"], 403);
         }
       )(req, res, next);
     } catch (err) {
-      this.failed(res, err.messages);
+      this.failed(res,req, err.messages);
     }
   }
 
@@ -34,11 +34,11 @@ class authController extends controller {
         "local.login",
         { session: false },
         (err, user, info) => {
-          if (err) return this.failed(res, err.message);
-          if (!user) return this.failed(res, "user is invalid!", 403);
+          if (err) return this.failed(res,req, err.message);
+          if (!user) return this.failed(res,req, "user is invalid!", 403);
 
           req.login(user, { session: false }, (err) => {
-            if (err) return this.failed(res, err.message);
+            if (err) return this.failed(res,req, err.message);
 
             //create token
             const token = jwt.sign({ id: user.id }, config.jwt.secret_key, {
@@ -53,7 +53,7 @@ class authController extends controller {
         }
       )(req, res);
     } catch (err) {
-      this.failed(res, err.messages);
+      this.failed(res,req, err.messages);
     }
   }
 
@@ -61,7 +61,7 @@ class authController extends controller {
     if (!(await this.validationData(req, res))) return;
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      return this.failed(res, "the user is not exist", 404);
+      return this.failed(res,req, "the user is not exist", 404);
     }
 
     const newPasswordReset = new PasswordReset({
@@ -83,7 +83,7 @@ class authController extends controller {
     };
 
     mail.sendMail(mailOptions, (err, info) => {
-      if (err) return this.failed(res, err.message);
+      if (err) return this.failed(res,req, err.message);
 
       return res.json({
         message: "sent",
@@ -98,7 +98,7 @@ class authController extends controller {
       $and: [{ email: req.body.email }, { token: req.body.token }],
     });
     if (!field) {
-      return this.failed(res, "The information entered is incorrect", 403);
+      return this.failed(res,req, "The information entered is incorrect", 403);
     }
 
     if (field.use) {
@@ -114,7 +114,7 @@ class authController extends controller {
       { $set: { password: req.body.password } }
     );
     if (!user) {
-      return this.failed(res, "Update failed", 403);
+      return this.failed(res,req, "Update failed", 403);
     }
 
     await field.update({ use: true });

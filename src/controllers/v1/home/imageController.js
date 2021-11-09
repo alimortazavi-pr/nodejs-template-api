@@ -5,13 +5,13 @@ const fs = require("fs");
 class imageController extends controller {
   async destroy(req, res) {
     try {
-      if (!this.isValidMongoId(res, req.params.image)) return;
+      if (!this.isValidMongoId(req, res, req.params.image)) return;
       let image = await Image.findOne({
         _id: req.params.image,
         user: req.user._id,
       });
       if (!image) {
-        return this.failed(res, "image not found", 404);
+        return this.failed(res, req, "image not found", 404);
       }
 
       if (fs.existsSync(`public/${image.path}`)) {
@@ -25,7 +25,7 @@ class imageController extends controller {
         message: "Deleted",
       });
     } catch (err) {
-      this.failed(res, err.message);
+      this.failed(res, req, err.message);
     }
   }
 }

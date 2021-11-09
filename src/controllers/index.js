@@ -20,13 +20,13 @@ class controller {
           });
         }
       }
-      this.failed(res, easyError, 403);
+      this.failed(res, req, easyError, 403);
       return false;
     }
     return true;
   }
 
-  failed(res, msg, statusCode = 500) {
+  failed(res, req, msg, statusCode = 500) {
     if (req.file) fs.unlinkSync(req.file.path);
     if (req.files) {
       if (req.files.length !== 0) {
@@ -40,9 +40,9 @@ class controller {
     });
   }
 
-  isValidMongoId(res, id) {
+  isValidMongoId(req, res, id) {
     if (!ObjectId.isValid(id)) {
-      this.failed(res, "MongoId is not valid");
+      this.failed(res, req, "MongoId is not valid");
       return false;
     } else {
       return true;

@@ -5,7 +5,7 @@ class adminController extends controller {
     try {
       return res.json("Admin");
     } catch (err) {
-      this.failed(res, err.message);
+      this.failed(res, req, err.message);
     }
   }
 }

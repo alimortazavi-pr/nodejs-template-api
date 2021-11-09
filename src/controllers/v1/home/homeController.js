@@ -5,7 +5,7 @@ class homeConroller extends controller {
     try {
       return res.json("Home");
     } catch (err) {
-      this.failed(res, err.message);
+      this.failed(res,req, err.message);
     }
   }
 
@@ -15,7 +15,7 @@ class homeConroller extends controller {
         user: req.user,
       });
     } catch (err) {
-      this.failed(res, err.message);
+      this.failed(res,req, err.message);
     }
   }
 }
