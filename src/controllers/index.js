@@ -12,11 +12,12 @@ class controller {
     const errors = validationResult(req);
     const easyError = errors.array().map((err) => err.msg);
     if (!errors.isEmpty()) {
-      if (req.file) fs.unlinkSync(req.file.path);
+      if (req.file && fs.existsSync(req.file.path))
+        fs.unlinkSync(req.file.path);
       if (req.files) {
         if (req.files.length !== 0) {
           req.files.forEach((file) => {
-            fs.unlinkSync(file.path);
+            if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
           });
         }
       }
@@ -27,11 +28,11 @@ class controller {
   }
 
   failed(res, req, msg, statusCode = 500) {
-    if (req.file) fs.unlinkSync(req.file.path);
+    if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
     if (req.files) {
       if (req.files.length !== 0) {
         req.files.forEach((file) => {
-          fs.unlinkSync(file.path);
+          if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
         });
       }
     }
