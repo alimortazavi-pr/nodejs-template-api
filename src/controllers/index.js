@@ -27,6 +27,14 @@ class controller {
   }
 
   failed(res, msg, statusCode = 500) {
+    if (req.file) fs.unlinkSync(req.file.path);
+    if (req.files) {
+      if (req.files.length !== 0) {
+        req.files.forEach((file) => {
+          fs.unlinkSync(file.path);
+        });
+      }
+    }
     return res.status(statusCode).json({
       message: msg,
     });
