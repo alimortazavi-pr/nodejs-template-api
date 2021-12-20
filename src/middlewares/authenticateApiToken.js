@@ -1,48 +1,54 @@
 const middleware = require("src/middlewares");
-const passport = require("passport");
+const jwt = require("jsonwebtoken");
+const User = require("src/models/User");
 
 class authenticateApiToken extends middleware {
-  Authenticated(req, res, next) {
-    if (req.headers.authorization) {
-      let authorization = req.headers.authorization.split(" ");
-      req.headers.authorization = authorization[1];
-    }
-    passport.authenticate("jwt", { session: false }, (err, user, info) => {
-      if (!user || err)
-        return res.status(401).json({
-          message: info.message || "You do not have permission to access.",
-        });
-
+  async Authenticated(req, res, next) {
+    try {
+      if (req.headers.authorization) {
+        let authorization = req.headers.authorization.split(" ");
+        req.headers.authorization = authorization[1];
+      }
+      let decodedToken = jwt.verify(
+        req.headers.authorization,
+        config.jwt.secret_key
+      );
+      if (!decodedToken) {
+        return this.failed(res, "You do not have permission to access", 401);
+      }
+      const user = await User.findById(decodedToken.userId);
+      if (!user) {
+        return this.failed(res, "User is not exist", 401);
+      }
       req.user = user;
 
       next();
-    })(req, res, next);
+    } catch (err) {
+      this.failed(res, err.messages);
+    }
   }
 
-  NotAuthenticated(req, res, next) {
-    if (req.headers.authorization) {
-      let authorization = req.headers.authorization.split(" ");
-      req.headers.authorization = authorization[1];
-    }
-    passport.authenticate("jwt", { session: false }, (err, user, info) => {
-      if (user || err)
-        return res.json({
-          message: "You do not have permission to access.",
-        });
-      next();
-    })(req, res, next);
-  }
-
-  CheckAuthenticated(req, res, next) {
-    if (req.headers.authorization) {
-      let authorization = req.headers.authorization.split(" ");
-      req.headers.authorization = authorization[1];
-    }
-    passport.authenticate("jwt", { session: false }, (err, user, info) => {
-      if (user || err) req.user = user;
+  async CheckAuthenticated(req, res, next) {
+    try {
+      if (req.headers.authorization) {
+        let authorization = req.headers.authorization.split(" ");
+        req.headers.authorization = authorization[1];
+      }
+      let decodedToken = jwt.verify(
+        req.headers.authorization,
+        config.jwt.secret_key
+      );
+      if (decodedToken) {
+        const user = await User.findById(decodedToken.userId);
+        if (user) {
+          req.user = user;
+        }
+      }
 
       next();
-    })(req, res, next);
+    } catch (err) {
+      this.failed(res, err.messages);
+    }
   }
 }
 

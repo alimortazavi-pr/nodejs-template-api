@@ -5,7 +5,7 @@ const authenticateApiToken = require("src/middlewares/authenticateApiToken");
 const redirectIfNotAdmin = require("src/middlewares/redirectIfNotAdmin");
 
 const authRouter = require("src/routers/v1/auth");
-router.use("/auth", authenticateApiToken.NotAuthenticated, authRouter);
+router.use("/auth", authRouter);
 
 const adminRouter = require("src/routers/v1/admin");
 router.use(

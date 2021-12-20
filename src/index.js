@@ -2,7 +2,6 @@ const express = require("express");
 const http = require("http");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const passport = require("passport");
 const cors = require("cors");
 
 const app = express();
@@ -38,10 +37,6 @@ class Application {
     app.use(express.static(config.layout.public_dir));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
-
-    require("src/passport/passport-local");
-    require("src/passport/passport-jwt");
-    app.use(passport.initialize());
   }
 
   routes() {

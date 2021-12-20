@@ -1,57 +1,54 @@
 const controller = require("src/controllers");
 const User = require("src/models/User");
 const PasswordReset = require("src/models/PasswordReset");
-const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const mail = require("src/helpers/mail");
 const uniqid = require("uniqid");
 
 class authController extends controller {
-  async register(req, res, next) {
+  async register(req, res) {
     try {
       if (!(await this.validationData(req, res))) return;
-      passport.authenticate(
-        "local.register",
-        { session: false },
-        (err, user, info) => {
-          if (err) return this.failed(res, req, err.message);
-          if (user)
-            return res.json({
-              message: "Done !",
-            });
-          return this.failed(res, req, info.message || "server error", 403);
-        }
-      )(req, res, next);
+      const { name, email, password } = req.body;
+      const user = User.findOne({ email });
+      if (user) {
+        return this.failed(res, req, "User already exists!", 403);
+      }
+      const newUser = new User({
+        name,
+        email,
+        password,
+      });
+      await newUser.save();
+      return res.json({
+        message: "done",
+      });
     } catch (err) {
       this.failed(res, req, err.messages);
     }
   }
 
-  async login(req, res, next) {
+  async login(req, res) {
     try {
       if (!(await this.validationData(req, res))) return;
-      passport.authenticate(
-        "local.login",
-        { session: false },
-        (err, user, info) => {
-          if (err) return this.failed(res, req, err.message);
-          if (!user) return this.failed(res, req, "user is invalid!", 403);
-
-          req.login(user, { session: false }, (err) => {
-            if (err) return this.failed(res, req, err.message);
-
-            //create token
-            const token = jwt.sign({ id: user.id }, config.jwt.secret_key, {
-              expiresIn: 60 * 60 * 12,
-            });
-
-            return res.json({
-              user,
-              token,
-            });
-          });
-        }
-      )(req, res);
+      const { email, password } = req.body;
+      const user = User.findOne({ email });
+      if (!user || !user.comparePassword(password)) {
+        return this.failed(
+          res,
+          req,
+          "The information entered is incorrect.",
+          403
+        );
+      }
+      //Create Token
+      const token = jwt.sign({ userId: user._id }, config.jwt.secret_key, {
+        expiresIn: 60 * 60 * 24 * 30 * 3,
+      });
+      return res.json({
+        user,
+        token,
+      });
     } catch (err) {
       this.failed(res, req, err.messages);
     }
@@ -72,13 +69,13 @@ class authController extends controller {
     await newPasswordReset.save();
 
     let mailOptions = {
-      from: '"nodejs-api" <test@test.com>', // sender address
+      from: `"nodejs-api" <${config.url_frontend}>`, // sender address
       to: `${newPasswordReset.email}`, // list of receivers
       subject: "Reset Password", // Subject line
       html: `
                 <h2>Reset Password</h2>
                 <p>Please Click on link for reset password :</p>
-                <a href="http://test.com/password-reset/${newPasswordReset.token}">Reset</a>
+                <a href="${config.url_frontend}/password-reset/${newPasswordReset.token}">Reset</a>
             `, // html body
     };
 
