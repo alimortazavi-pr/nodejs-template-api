@@ -10,7 +10,7 @@ class authController extends controller {
     try {
       if (!(await this.validationData(req, res))) return;
       const { name, email, password } = req.body;
-      const user = User.findOne({ email });
+      const user = await User.findOne({ email });
       if (user) {
         return this.failed(res, req, "User already exists!", 403);
       }
@@ -32,7 +32,7 @@ class authController extends controller {
     try {
       if (!(await this.validationData(req, res))) return;
       const { email, password } = req.body;
-      const user = User.findOne({ email });
+      const user = await User.findOne({ email });
       if (!user || !user.comparePassword(password)) {
         return this.failed(
           res,
