@@ -12,7 +12,7 @@ const userSchema = Schema(
     mobileActive: { type: Boolean, default: false },
     password: { type: String, required: true },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true } }
 );
 
 userSchema.pre("save", function (next) {
