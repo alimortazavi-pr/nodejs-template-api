@@ -5,9 +5,13 @@ const User = require("src/models/User");
 class authenticateApiToken extends middleware {
   async Authenticated(req, res, next) {
     try {
+      let token;
       if (req.headers.authorization) {
         let authorization = req.headers.authorization.split(" ");
-        req.headers.authorization = authorization[1];
+        token = authorization[1];
+      }
+      if (!token) {
+        return this.failed(res, "You do not have permission to access", 401);
       }
       let decodedToken = jwt.verify(
         req.headers.authorization,
