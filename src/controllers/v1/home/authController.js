@@ -111,6 +111,7 @@ class authController extends controller {
       if (field.use) {
         return this.failed(
           res,
+          req,
           "This link has already been used to recover the password",
           403
         );
