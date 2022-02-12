@@ -4,9 +4,6 @@ const router = require("express").Router();
 const authenticateApiToken = require("src/middlewares/authenticateApiToken");
 const redirectIfNotAdmin = require("src/middlewares/redirectIfNotAdmin");
 
-const authRouter = require("src/routers/v1/auth");
-router.use("/auth", authRouter);
-
 const adminRouter = require("src/routers/v1/admin");
 router.use(
   "/admin",
