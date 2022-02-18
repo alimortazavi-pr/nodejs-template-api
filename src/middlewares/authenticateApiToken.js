@@ -13,10 +13,14 @@ class authenticateApiToken extends middleware {
       if (!token) {
         return this.failed(res, "You do not have permission to access", 401);
       }
-      let decodedToken = jwt.verify(
-        token,
-        config.jwt.secret_key
-      );
+
+      let decodedToken;
+      try {
+        decodedToken = jwt.verify(token, config.jwt.secret_key);
+      } catch (err) {
+        return this.failed(res, "You do not have permission to access", 401);
+      }
+      
       if (!decodedToken) {
         return this.failed(res, "You do not have permission to access", 401);
       }
