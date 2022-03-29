@@ -47,7 +47,7 @@ userSchema.methods.comparePassword = function (password) {
   return bcryptjs.compareSync(password, this.password);
 };
 
-userSchema.virtual("image", {
+userSchema.virtual("profile", {
   ref: "Image",
   localField: "_id",
   foreignField: "profile",
