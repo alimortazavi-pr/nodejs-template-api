@@ -25,12 +25,15 @@ class Application {
     });
   }
 
-  db() {
-    mongoose.Promise = global.Promise;
-    mongoose.connect(config.database.url, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+  async db() {
+    try {
+      await mongoose.connect(config.database.url);
+      console.log(`
+                MongoDB database : ${config.database.url}
+      `);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   config() {
