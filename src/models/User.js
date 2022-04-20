@@ -16,15 +16,10 @@ const userSchema = Schema(
 );
 
 userSchema.pre("save", async function (next) {
-  const docToUpdate = await this.model.findOne(this.getQuery());
-  if (this.getUpdate().$set.password) {
-    let salt = bcryptjs.genSaltSync(15);
-    let hash = bcryptjs.hashSync(this.getUpdate().$set.password, salt);
+  let salt = bcryptjs.genSaltSync(15);
+  let hash = bcryptjs.hashSync(this.password, salt);
 
-    this.getUpdate().$set.password = hash;
-  } else {
-    this.getUpdate().$set.password = docToUpdate.password;
-  }
+  this.password = hash;
   next();
 });
 
