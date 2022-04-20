@@ -1,11 +1,11 @@
 const router = require("express").Router();
 
 //Controllers
-const homeController = require("src/controllers/v1/home/homeController");
-const imageController = require("src/controllers/v1/home/imageController");
+const homeController = require("controllers/v1/home/homeController");
+const imageController = require("controllers/v1/home/imageController");
 
 //middlewares
-const authenticateApiToken = require("src/middlewares/authenticateApiToken");
+const authenticateApiToken = require("middlewares/authenticateApiToken");
 
 router.get("/", homeController.index);
 router.get(

@@ -1,4 +1,4 @@
-const validator = require("src/validators");
+const validator = require("validators");
 const { check } = require("express-validator");
 
 class authValidator extends validator {

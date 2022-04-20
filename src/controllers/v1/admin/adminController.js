@@ -1,4 +1,4 @@
-const controller = require("src/controllers");
+const controller = require("controllers");
 
 class adminController extends controller {
   index(req, res) {

@@ -1,5 +1,5 @@
-const controller = require("src/controllers");
-const Image = require("src/models/Image");
+const controller = require("controllers");
+const Image = require("models/Image");
 const fs = require("fs");
 
 class imageController extends controller {

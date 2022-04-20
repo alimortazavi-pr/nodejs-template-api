@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
 //Controllers
-const adminController = require("src/controllers/v1/admin/adminController");
+const adminController = require("controllers/v1/admin/adminController");
 
 router.get("/", adminController.index);
 

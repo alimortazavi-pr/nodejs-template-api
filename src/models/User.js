@@ -15,7 +15,7 @@ const userSchema = Schema(
   { timestamps: true, toJSON: { virtuals: true } }
 );
 
-userSchema.pre("save", function (next) {
+userSchema.pre("save", async function (next) {
   const docToUpdate = await this.model.findOne(this.getQuery());
   if (this.getUpdate().$set.password) {
     let salt = bcryptjs.genSaltSync(15);
@@ -28,7 +28,7 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-userSchema.pre("updateOne", function (next) {
+userSchema.pre("updateOne", async function (next) {
   const docToUpdate = await this.model.findOne(this.getQuery());
   if (this.getUpdate().$set.password) {
     let salt = bcryptjs.genSaltSync(15);
@@ -41,7 +41,7 @@ userSchema.pre("updateOne", function (next) {
   next();
 });
 
-userSchema.pre("findOneAndUpdate", function (next) {
+userSchema.pre("findOneAndUpdate", async function (next) {
   const docToUpdate = await this.model.findOne(this.getQuery());
   if (this.getUpdate().$set.password) {
     let salt = bcryptjs.genSaltSync(15);

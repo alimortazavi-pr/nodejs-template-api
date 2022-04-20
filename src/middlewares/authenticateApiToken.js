@@ -1,6 +1,6 @@
-const middleware = require("src/middlewares");
+const middleware = require("middlewares");
 const jwt = require("jsonwebtoken");
-const User = require("src/models/User");
+const User = require("models/User");
 
 class authenticateApiToken extends middleware {
   async Authenticated(req, res, next) {

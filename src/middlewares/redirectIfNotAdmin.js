@@ -1,4 +1,4 @@
-const middleware = require("src/middlewares");
+const middleware = require("middlewares");
 
 class redirectIfNotAdmin extends middleware {
   handler(req, res, next) {

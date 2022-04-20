@@ -1,8 +1,8 @@
-const controller = require("src/controllers");
-const User = require("src/models/User");
-const PasswordReset = require("src/models/PasswordReset");
+const controller = require("controllers");
+const User = require("models/User");
+const PasswordReset = require("models/PasswordReset");
 const jwt = require("jsonwebtoken");
-const mail = require("src/helpers/mail");
+const mail = require("helpers/mail");
 const uniqid = require("uniqid");
 
 class authController extends controller {
